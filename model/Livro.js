@@ -12,11 +12,14 @@ const Livro = connection.define(
     'tbl_livro',
     {
         codigo_livro:{
-            type: sequelize.INTEGER,
+            type: Sequelize.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-
+        codigo_categoria:{
+            type: Sequelize.INTEGER,
+            allowNull: false
+        },
         titulo:{
             type: Sequelize.STRING,
             allowNull: false
@@ -26,11 +29,11 @@ const Livro = connection.define(
             allowNull: false
         },
         imagen_peq:{
-            type: Sequelize.STRING(500),
+            type: Sequelize.STRING,
             allowNull: false
         },
         imagen_grd:{
-            type: Sequelize.STRING(500),
+            type: Sequelize.STRING,
             allowNull: false
         },
         detalhes:{
@@ -41,12 +44,18 @@ const Livro = connection.define(
 );
 
 /*Implementação da  CHAVE ESTRANGEIRA - LADO N*/
-Categoria.hasMany(Livro);
+Categoria.hasMany(Livro, {
+    foreignKey: 'codigo_categoria',
+    sourceKey: 'codigo_categoria'
+});
 
 
 /*Implementação da  CHAVE PRIMÁRIA - LADO 1*/
-Livro.belongsTo(Categoria);
+Livro.belongsTo(Categoria, {
+    foreignKey: 'codigo_categoria',
+    sourceKey: 'codigo_categoria'
+});
 
-//Livro.sync({force:true});
+Livro.sync({force:false});
 
 module.exports = Livro;
