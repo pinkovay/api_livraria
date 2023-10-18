@@ -28,11 +28,11 @@ const Livro = connection.define(
             type: Sequelize.STRING,
             allowNull: false
         },
-        imagen_peq:{
+        imagem_peq:{
             type: Sequelize.STRING,
             allowNull: false
         },
-        imagen_grd:{
+        imagem_grd:{
             type: Sequelize.STRING,
             allowNull: false
         },

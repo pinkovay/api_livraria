@@ -3,24 +3,22 @@ const express = require('express');
 const app = express();
 const router = express.Router();
 
-const upload = require('../helpers/upload/uploadImagem');
-const deleteImage = require('../helpers/upload/deleteImagem');
+// const upload = require('../helpers/upload/uploadImagem');
+// const deleteImage = require('../helpers/upload/deleteImagem');
 const livro = require('../model/Livro');
 
-router.post('/livro/cadastrarLivro', upload.array('files', 2) ,(req, res)=>{
+router.post('/livro/cadastrarLivro', (req, res)=>{
 
-    const { titulo, preco, detalhes, tblCategoriaumId } = req.body;
-    const imagen_peq = req.files[0].path;
-    const imagen_grd = req.files[1].path;
+    const { titulo, preco, imagem_peq, imagem_grd, detalhes, codigo_categoria } = req.body;
 
     livro.create(
         {
             titulo,
             preco,
-            imagen_peq,
-            imagen_grd,
+            imagem_peq,
+            imagem_grd,
             detalhes,
-            tblCategoriaumId
+            codigo_categoria
 
         }
     ).then(
@@ -52,11 +50,11 @@ router.get('/livro/listarLivro', (req, res)=>{
         });
 });
 
-router.get('/livro/listarLivroCodigo/:id', (req, res)=>{
+router.get('/livro/listarLivroCodigo/:codigo_livro', (req, res)=>{
 
-    const { id } = req.params
+    const { codigo_livro } = req.params
 
-    livro.findByPk(id)
+    livro.findByPk(codigo_livro)
         .then((livro)=>{
             return res.status(200).json(livro)
         }).catch((erro)=>{
@@ -67,24 +65,16 @@ router.get('/livro/listarLivroCodigo/:id', (req, res)=>{
         });
 });
 
-router.delete('/livro/excluirLivro/:id', (req, res)=>{
+router.delete('/livro/excluirLivro/:codigo_livro', (req, res)=>{
 
-    const { id } = req.params;
+    const { codigo_livro } = req.params;
 
-    livro.findByPk(id)
-
-        .then((livro)=>{
-
-            let imagem_grd = livro.imagen_grd;
-            let imagem_peq = livro.imagen_peq;
 
             livro.destroy({
-                where:{id}
+                where:{codigo_livro}
             }).then(
                 ()=>{
-                    deleteImage(imagem_peq);
-                    deleteImage(imagem_grd);
-
+                    
                     return res.status(200).json({
                         erroStatus:false,
                         mensagemStatus:'Livro excluído com sucesso.'
@@ -97,60 +87,25 @@ router.delete('/livro/excluirLivro/:id', (req, res)=>{
                     });
                 });
 
-        });
-
 });
 
-router.put('/livro/editarLivro', upload.array('files', 2), (req, res)=>{
+router.put('/livro/editarLivro', (req, res)=>{
 
-    const { titulo, preco, detalhes, tblCategoriaumId, id } = req.body;
+    const { titulo, preco, detalhes, codigo_categoria, imagem_peq, imagem_grd, codigo_livro } = req.body;
 
-        /** UPDATE COM IMAGEM **/
-        if(req.files != ''){
-            livro.findByPk(id)
-            .then((livro)=>{
+       
 
-                let imagem_grd_old = livro.imagen_grd;
-                let imagem_peq_old = livro.imagen_peq;
-
-                deleteImage(imagem_peq_old);
-                deleteImage(imagem_grd_old);
-
-                let imagen_peq = req.files[0].path;
-                let imagen_grd = req.files[1].path;
-
-                /** ATUALIZAÇÃO DOS DADOS DE LIVRO **/
-                livro.update(
-                    {titulo,
-                    imagen_peq,
-                    imagen_grd,
-                    preco,
-                    detalhes,
-                    tblCategoriaumId},
-                    {where: {id}}
-                ).then(
-                    ()=>{
-                        return res.status(200).json({
-                            erroStatus:false,
-                            mensagemStatus:'Livro alterado com sucesso.'
-                        });
-                    }).catch((erro)=>{
-                        return res.status(400).json({
-                            erroStatus: true,
-                            erroMensagem: erro
-                        });
-                    });
-            });
-
-        }else{
+        
 
             /** UPDATE SEM IMAGEM **/
             livro.update(
                 {titulo,
                 preco,
                 detalhes,
-                tblCategoriaumId},
-                {where: {id}}
+                imagem_peq,
+                imagem_grd,
+                codigo_categoria},
+                {where: {codigo_livro}}
             ).then(
                 ()=>{
                     return res.status(200).json({
@@ -163,7 +118,7 @@ router.put('/livro/editarLivro', upload.array('files', 2), (req, res)=>{
                         erroMensagem: erro
                     });
                 });
-        }
+        
 
 });
 
