@@ -1,9 +1,11 @@
+// Por enquanto, este é o modo como eu encontrei de limpar o terminal quando o código é iniciado, ainda estpa bem no ínicio e é algo somente previo.
+console.clear()
+
 //IMPORTAÇÃO DO MÓDULO DO EXPRESS
 const express = require("express");
 
-
 //IMPORTACAO DO ARQUIVO DE MODEL DA TABELA DE CATEGORIA
-
+// código não mais utilizado
 
 //INSTANCIA DE MODULO DO EXPRESS
 const app = express();
@@ -32,5 +34,5 @@ app.use("/", livroController)
 
 //CRIAÇÃO DO SERVIDOR WEB DE REQUISIÇOES E RESPOSTAS 
 app.listen(3000, ()=>{
-    console.log('API LIVRARIA RODANDO EM: http:localhost:3000');
+    console.log('\x1b[42;30m%s\x1b[0m', ' API LIVRARIA RODANDO EM http://localhost:3000 ');
 });
