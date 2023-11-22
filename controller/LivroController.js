@@ -20,6 +20,7 @@ const router = express.Router();
 
 const livros = require('../model/Livro')
 const upload = require('../helpers/upload/uploadimagem')
+const deleteImage = require('../helpers/upload/deleteImagem')
 
 
 require("dotenv").config()
@@ -31,8 +32,6 @@ const firebaseApp = initializeApp(firebaseConfig);
 
 // CONECTANDO COM O STORAGE;
 const storage = getStorage(firebaseApp);
-
-const deleteImage = require('../helpers/upload/deleteImagem')
 // const deleteImage = require('../helpers/upload/deleteImagem');
 const livro = require('../model/Livro');
 // const { SNAPSHOT } = require('sequelize/types/table-hints');
