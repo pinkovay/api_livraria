@@ -34,5 +34,5 @@ app.use("/", livroController)
 
 //CRIAÇÃO DO SERVIDOR WEB DE REQUISIÇOES E RESPOSTAS 
 app.listen(3000, ()=>{
-    console.log('\x1b[42;30m%s\x1b[0m', ' API LIVRARIA RODANDO EM http://localhost:3000 ');
+    console.log('\x1b[42;30m%s\x1b[0m', ' API RODANDO EM - http://localhost:3000 ');
 });

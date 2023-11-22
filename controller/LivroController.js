@@ -19,29 +19,20 @@ const app = express();
 const router = express.Router();
 
 const livros = require('../model/Livro')
-const upload = require('../helpers/uploadimagem')
+const upload = require('../helpers/upload/uploadimagem')
+
 
 require("dotenv").config()
 
 // FIREBASE: CONEXÃO E CONFIGURAÇÃO
-const firebaseConfig = {
-    apiKey: process.env.API_KEY,
-    authDomain: "upload-nodejs-81b8a.firebaseapp.com",
-    projectId: process.env.PROJECT_ID,
-    storageBucket: "upload-nodejs-81b8a.appspot.com",
-    messagingSenderId: "680308757143",
-    appId: process.env.APP_ID,
-    measurementId: "G-3V2G3Q4ZZB"
-};
-
+const firebaseConfig = require('../Config/firebase')
 // INICIALIZAR O FIREBASE;
 const firebaseApp = initializeApp(firebaseConfig);
-
 
 // CONECTANDO COM O STORAGE;
 const storage = getStorage(firebaseApp);
 
-
+const deleteImage = require('../helpers/upload/deleteImagem')
 // const deleteImage = require('../helpers/upload/deleteImagem');
 const livro = require('../model/Livro');
 // const { SNAPSHOT } = require('sequelize/types/table-hints');
@@ -85,14 +76,14 @@ router.post('/livro/cadastrarLivro', upload.array('files', 2), (req, res) => {
 
                                     cont++
 
-                                    console.log(`NOME DA IMAGEM PQN.: ${imagem_peq}`)
+                                    console.log(`\nNOME DA IMAGEM PQN.: ${imagem_peq}`)
                                     console.log(`URL DA IMAGEM PQN.: ${imagem_peq_url}`)
                                 } else{
                                     // imagem grande
                                     imagem_grd = fileName;
                                     imagem_grd_url = urlFinal;
 
-                                    console.log(`NOME DA IMAGEM GRD.: ${imagem_grd}`)
+                                    console.log(`\nNOME DA IMAGEM GRD.: ${imagem_grd}`)
                                     console.log(`URL DA IMAGEM GRD.: ${imagem_grd_url}`)
                                 }
 
@@ -135,30 +126,6 @@ router.post('/livro/cadastrarLivro', upload.array('files', 2), (req, res) => {
             )
 
 
-    
-    
-    
-    
-    
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
 });
 });
 
@@ -194,23 +161,45 @@ router.delete('/livro/excluirLivro/:codigo_livro', (req, res) => {
 
     const { codigo_livro } = req.params;
 
+    livro.findByPk(codigo_livro)
+        .then(
+            (livro)=>{
+                // console.log('IMAGEM PEQUENA' + livro.imagem_peq)
+                // console.log('IMAGEM GRANDE' + livro.imagem_grd)
+                deleteImage(livro.imagem_peq)
+                deleteImage(livro.imagem_grd)
+                livro.destroy({
+                    where: { codigo_livro }
+                }).then(
+                    () => {
+                        return res.status(200).json({
+                            erroStatus: false,
+                            mensagemStatus: 'Livro excluído com sucesso.'
+                        });
+                    }).catch((erro) => {
+                        return res.status(400).json({
+                            erroStatus: true,
+                            erroMensagem: erro
+                        });
+                    });
+            })
 
-    livro.destroy({
-        where: { codigo_livro }
-    }).then(
-        () => {
+    // livro.destroy({
+    //     where: { codigo_livro }
+    // }).then(
+    //     () => {
 
-            return res.status(200).json({
-                erroStatus: false,
-                mensagemStatus: 'Livro excluído com sucesso.'
-            });
+    //         return res.status(200).json({
+    //             erroStatus: false,
+    //             mensagemStatus: 'Livro excluído com sucesso.'
+    //         });
 
-        }).catch((erro) => {
-            return res.status(400).json({
-                erroStatus: true,
-                erroMensagem: erro
-            });
-        });
+    //     }).catch((erro) => {
+    //         return res.status(400).json({
+    //             erroStatus: true,
+    //             erroMensagem: erro
+    //         });
+    //     });
 
 });
 

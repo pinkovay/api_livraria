@@ -28,7 +28,8 @@ const connection = new sequelize(
 );
 
 if (!connection.config.logging){
-    console.warn("Aviso: O logging está desativado na configuração de conexão do projeto.")
+    console.warn(`\x1b[43m%s\x1b[0m`, ' Aviso: O logging está desativado na configuração de conexão do projeto \n')
+    // console.warn("Aviso: O logging está desativado na configuração de conexão do projeto.")
 }
 
 module.exports = connection;
